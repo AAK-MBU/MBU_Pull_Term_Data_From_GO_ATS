@@ -4,17 +4,67 @@ import asyncio
 import json
 import logging
 
+from datetime import datetime
+
 from automation_server_client import Workqueue
 
 from helpers import config
 
 logger = logging.getLogger(__name__)
 
+proces_arguments = {
+    "go_pull_taxonomy_data_bor": {
+        "process": "taxonomy",
+        "baseUrl": "https://ad.go.aarhuskommune.dk",
+        "caseType": "borgersager",
+        "viewId": "f8f14409-e2f6-452f-aeac-acc18b3e6b5c"
+    },
+    "go_pull_taxonomy_data_emn": {
+        "process": "taxonomy",
+        "baseUrl": "https://ad.go.aarhuskommune.dk",
+        "caseType": "emnesager",
+        "viewId": "db7f8be3-a3cb-4ea2-b495-7eba638f3fc7"
+    },
+    "go_pull_term_data_case_profile_bor": {
+        "process": "term",
+        "baseUrl": "https://ad.go.aarhuskommune.dk",
+        "caseType": "borgersager",
+        "storedProcedure": "GO_CaseProfiles_Insert",
+        "objectType": "case profiles",
+        "startTermId": "dc87e41a-cab3-4286-8a1b-72ba6368cb90",
+        "termSetUuid": "8adfc3ee-428f-47fb-80aa-c285c28d3d93"
+    },
+    "go_pull_term_data_case_profile_emn": {
+        "process": "term",
+        "baseUrl": "https://ad.go.aarhuskommune.dk",
+        "caseType": "emnesager",
+        "storedProcedure": "GO_CaseProfiles_Insert",
+        "objectType": "case profiles",
+        "startTermId": "9cd80176-977f-4d4b-9073-7bfb9361afe0",
+        "termSetUuid": "b52da1e5-209d-4ed6-b923-6d590072aa49"
+    },
+    "go_pull_term_data_departments": {
+        "process": "term",
+        "baseUrl": "https://ad.go.aarhuskommune.dk",
+        "caseType": "emnesager",
+        "storedProcedure": "GO_Departments_Insert",
+        "objectType": "departments",
+        "startTermId": "3239f2cb-1cac-4f10-8897-39d64127a2e2",
+        "termSetUuid": "62c5a7cc-eb6f-4704-a86f-c576c4bebcca"
+    },
+}
+
 
 def retrieve_items_for_queue() -> list[dict]:
     """Function to populate queue"""
     data = []
     references = []
+
+    todays_date = datetime.today().date().isoformat()
+
+    for run_type, proc_args in proces_arguments.items():
+        references.append(f"{todays_date}_{run_type}")
+        data.append(proc_args)
 
     items = [
         {"reference": ref, "data": d} for ref, d in zip(references, data, strict=True)
