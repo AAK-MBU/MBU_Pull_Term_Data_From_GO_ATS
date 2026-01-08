@@ -42,6 +42,7 @@ def insert_into_database(connection_string, stored_procedure, data, case_type):
     Prints:
         str: A message indicating the failure of an insertion along with the error message.
     """
+
     for item in data:
         params = {
             "ID": ("str", item.get("ID", "")),
@@ -52,7 +53,9 @@ def insert_into_database(connection_string, stored_procedure, data, case_type):
             "Path": ("str", item.get("Path", "")),
             "CaseType": ("str", case_type)
         }
+
         print(params)
+
         result = execute_stored_procedure(connection_string, stored_procedure, params)
         if not result["success"]:
             print(f"Failed to insert record: {result['error_message']}")
@@ -71,6 +74,7 @@ def get_taxononmy(credentials, case_type, view_id, base_url):
     Prints:
         str: Messages indicating the progress of data fetching and insertion, or errors if they occur.
     """
+
     endpoint = f"/{case_type}/_api/web/GetList('%2F{case_type}%2FLists%2FTaxonomyHiddenList')/RenderListDataAsStream"
     initial_url = f"{endpoint}?Paged=TRUE&p_ID=0&PageFirstRow=31&View={view_id}"
     full_url = base_url + initial_url
@@ -91,13 +95,19 @@ def get_taxononmy(credentials, case_type, view_id, base_url):
                 next_url = base_url + endpoint + json_data["NextHref"]
             else:
                 next_url = None
+
         insert_into_database(credentials['sql_conn_string'], "rpa.GO_TaxonomyList_Insert", all_rows, case_type)
+
         print("All rows have been inserted into the database.")
+
     except requests.exceptions.RequestException as re:
         print(f"Request error occurred: {str(re)}")
+
     except KeyError as ke:
         print(f"Missing key in credentials: {str(ke)}")
+
     except TypeError as te:
         print(f"Type error: {str(te)}")
+
     except json.JSONDecodeError as je:
         print(f"JSON decode error: {str(je)}")

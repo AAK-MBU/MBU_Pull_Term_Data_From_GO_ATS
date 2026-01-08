@@ -152,11 +152,11 @@ def _insert_term_data_to_sql(data, sql_conn_string, term_set_uuid, sql_stored_pr
         uuid = data.get("Id")
         parent_uuid = data.get("ParentId")
         sql_data_params = {
-                "name": ("str", f"{name}"),
-                "uuid": ("str", f"{uuid}"),
-                "parent_uuid": ("str", f"{parent_uuid}"),
-                "term_set_uuid": ("str", f"{term_set_uuid}")
-            }
+            "name": ("str", f"{name}"),
+            "uuid": ("str", f"{uuid}"),
+            "parent_uuid": ("str", f"{parent_uuid}"),
+            "term_set_uuid": ("str", f"{term_set_uuid}")
+        }
         execute_stored_procedure(sql_conn_string, f"rpa.{sql_stored_procedure}", sql_data_params)
 
         for child in data.get("Children", []):
