@@ -51,7 +51,6 @@ def process_item(item_data: dict, item_reference: str):
         logger.info("Pull term data from GO")
 
         sql_stored_procedure = item_data.get("storedProcedure")
-        object_type = item_data.get("objectType")
         start_term_id = item_data.get("startTermId")
         term_set_uuid = item_data.get("termSetUuid")
 
