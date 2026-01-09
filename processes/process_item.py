@@ -18,7 +18,7 @@ def process_item(item_data: dict, item_reference: str):
     assert item_data, "Item data is required"
     assert item_reference, "Item reference is required"
 
-    with RPAConnection as rpa_conn:
+    with RPAConnection() as rpa_conn:
         go_api_creds = rpa_conn.get_credential("go_api")
         go_api_username = go_api_creds.get("username", "")
         go_api_password = go_api_creds.get("decrypted_password", "")
