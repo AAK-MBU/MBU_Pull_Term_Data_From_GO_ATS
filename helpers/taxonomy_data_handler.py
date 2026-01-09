@@ -4,9 +4,13 @@ and inserting the retrieved data into a database using a stored procedure.
 """
 import json
 import requests
+import logging
+
 from requests_ntlm import HttpNtlmAuth
 
 from mbu_dev_shared_components.utils.db_stored_procedure_executor import execute_stored_procedure
+
+logger = logging.getLogger(__name__)
 
 
 def fetch_data(session, url):
@@ -95,6 +99,8 @@ def get_taxononmy(credentials, case_type, view_id, base_url):
                 next_url = base_url + endpoint + json_data["NextHref"]
             else:
                 next_url = None
+
+        logger.info(f"Len of all_rows: {len(all_rows)}")
 
         insert_into_database(credentials['sql_conn_string'], "rpa.GO_TaxonomyList_Insert", all_rows, case_type)
 
